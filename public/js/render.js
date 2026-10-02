@@ -15,8 +15,13 @@
 //   renderPage     string replacement of every region (Node build)
 //   visibleSections  which sections have content (nav, numbering, hiding)
 //   renderPrint    the two-page US Letter résumé
+//   PRINT_PHOTO    the print headshot (empty: the sheet has no photo)
 
 const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+// The print headshot. Empty until a real photo of Drew is installed; set it to
+// the photo path (for example "/center.webp") to show the photo on the sheet.
+const PRINT_PHOTO = "";
+
 export const e = (text) => String(text ?? "").replace(/[&<>"']/g, (c) => ESC[c]);
 const ed = (path) => ` data-edit="${e(path)}"`;
 const nameParts = (name) => {
@@ -85,7 +90,7 @@ function renderHead(d) {
   // ("Statistics @ Berkeley | Class of ’28 | ...") is the second line.
   const title = d.name;
   const blurb = nonEmpty(d.about).join(" | ") || d.title;
-  const version = (site.image_version ?? 3);
+  const version = (site.image_version ?? 4);
   const [first, last] = nameParts(d.name);
   const person = {
     "@context": "https://schema.org",
@@ -110,7 +115,7 @@ function renderHead(d) {
     `<meta property="og:image:type" content="image/jpeg" />`,
     `<meta property="og:image:width" content="1200" />`,
     `<meta property="og:image:height" content="630" />`,
-    `<meta property="og:image:alt" content="Stylized portrait of ${e(d.name)} in a gold studio arch beside the name and title, ${e(d.title)}." />`,
+    `<meta property="og:image:alt" content="${e(d.name)}, ${e(d.title)}, beside a gold studio arch." />`,
     `<meta property="profile:first_name" content="${e(first)}" />`,
     `<meta property="profile:last_name" content="${e(last)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
@@ -169,7 +174,7 @@ function renderHero(d) {
 }
 
 function renderPortraitAlt(d) {
-  return `<span class="visually-hidden" id="portrait-alt">Stylized portrait of ${e(d.name)} with a dark bob, a black turtleneck, and a blue pendant, against a gold background.</span>`;
+  return `<span class="visually-hidden" id="portrait-alt">Gold studio arch. A photo of ${e(d.name)} is coming soon.</span>`;
 }
 
 // ---------- main ----------
@@ -342,8 +347,8 @@ function renderPrint(d) {
       <p class="ps-kicker">${e(d.title)}</p>
       <h2 class="ps-name">${e(first)} <em>${e(last)}</em></h2>
       <p class="ps-about">${about.map((x) => `<span>${e(x)}</span>`).join("")}</p>
-    </div>
-    <div class="ps-photo"><img src="/center.webp" alt="" /></div>
+    </div>${PRINT_PHOTO ? `
+    <div class="ps-photo"><img src="${e(PRINT_PHOTO)}" alt="" /></div>` : ""}
   </header>
   ${facts ? `<div class="ps-facts">${facts}</div>` : ""}
   <div class="ps-body">

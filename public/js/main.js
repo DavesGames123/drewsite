@@ -8,6 +8,10 @@
 //             and the page says that the animation frames are not installed
 //   fallback  FALLBACK PATH: frames or metadata are absent, so the approved
 //             still portrait is drawn and the page says so
+//   empty     no frames and no still portrait: CSS shows the empty gold arch
+//
+// To install real photos, put the still at APPROVED_PORTRAIT (fallback mode),
+// or run scripts/extract_video_frames.py for a frame ring (ring mode).
 //
 // Force the fallback path for testing with ?portrait=static.
 
@@ -158,15 +162,21 @@ function applyMotionPreference() {
 }
 
 // FALLBACK PATH: no video-derived frames. Draw the approved still portrait and label it.
+// Without the still, the field stays empty: the arch shows, and nothing takes focus.
 async function startFallback(reason) {
   console.info(`Portrait fallback: ${reason}`);
   const image = await decodeImage(APPROVED_PORTRAIT).catch(() => null);
-  renderer.resize(864, 1536);
-  figure.dataset.alpha = "false";
-  if (image) renderer.drawStatic(image);
   companion.enabled = false; // the square still does not fill the 9:16 field
   stage.schedule();
-  setMode("fallback", image ? "Still portrait — animation frames not installed" : "Portrait unavailable");
+  if (!image) {
+    field.tabIndex = -1;
+    setMode("empty", "Photo coming soon");
+    return;
+  }
+  renderer.resize(864, 1536);
+  figure.dataset.alpha = "false";
+  renderer.drawStatic(image);
+  setMode("fallback", "Still portrait — animation frames not installed");
 }
 
 // The metadata and center frame loaded, but the ring frames fail. Hold eye
