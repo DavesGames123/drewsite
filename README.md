@@ -76,7 +76,7 @@ To change the password, run `node scripts/edit_lock.mjs password`. A new passwor
 
 ## Deploy to drewwatkins.com
 
-The site deploys like lilysite. Each push to `main` starts `.github/workflows/pages.yml`. The workflow renders `profile.json` into the page, runs `check_site.py`, builds `dist/`, and publishes `dist/` to GitHub Pages.
+The site deploys like lilysite. Each push to `main` starts `.github/workflows/pages.yml`. The workflow renders `profile.json` into the page, runs `check_site.py`, builds `dist/`, prints the résumé PDF into `dist/`, and publishes `dist/` to GitHub Pages.
 
 The status on 2026-10-01: steps 1 to 4 are complete. Use the steps again if the domain or the repository moves.
 
@@ -127,7 +127,17 @@ Ring index `i` has the screen angle `-90° - i × 5.625°`. Index 0 looks up, 16
 
 ## Print
 
-"Print résumé" prints a US Letter résumé, not the screen layout. `render.js` writes the `.print-sheet` block from `profile.json`, and only `@media print` shows it.
+The printed résumé is a US Letter sheet, not the screen layout. `render.js` writes the `.print-sheet` block from `profile.json`, and only `@media print` shows it.
+
+The footer link "Résumé (PDF)" downloads `/drew-watkins-resume.pdf`. The deploy makes this file: `scripts/build_pdf.mjs` prints the served `dist/` page in headless Chrome, with no browser header or footer. Thus an edit from the editor reaches the PDF in the same deploy. The script stops the deploy if the PDF is not 1 or 2 pages. The file is not in `public/`, so the link gives a 404 on a local server of `public/`. To make the PDF locally:
+
+```bash
+bash scripts/build_dist.sh
+python3 -m http.server 4173 -d dist &
+node scripts/build_pdf.mjs --url http://localhost:4173/ --out dist/drew-watkins-resume.pdf
+```
+
+Cmd+P on the page also prints the sheet, with the header and footer of the browser.
 
 The sheet flows. The browser makes as many pages as the content needs, so the current profile prints on 1 page. A blue card with skills, honors, and links floats at the right of the main column. The sheet has no fixed page height, needs no `@page` margins, and uses no CSS mask. For this reason, it prints the same in Chrome, Safari, and Firefox.
 
