@@ -2,11 +2,16 @@
 
 The source clip is not one clean circle from frame 0. It contains these segments:
 
-    0-11     frontal pose, then the eyes lift (not used)
-    12-204   one full look-around, counter-clockwise on screen: up, left,
+    0-26     frontal pose and a blink (not used)
+    27-198   one full look-around, counter-clockwise on screen: up, left,
              down, right, and up again
-    205-221  a blink and the return to the front (not used)
-    222-238  a frontal pose with eye contact
+    199-221  the return to the front (not used)
+    222-239  a frontal pose with eye contact
+
+The video frames her from the waist up, so the face is small. CROP zooms
+in before the matte: a fixed 9:16 window (1/CROP["zoom"] of the frame)
+around the face. The window keeps the face at the same height in the
+frame as the earlier video, and the face is a little larger.
 
 KEYFRAMES records the screen direction of the head for frames in the look-around.
 The angles are hand annotations from contact sheets (approximately +/-15 degrees).
@@ -45,24 +50,29 @@ import matte  # noqa: E402
 
 # (source frame, unwrapped screen angle in degrees)
 KEYFRAMES: list[tuple[int, float]] = [
-    (15, -90.0),
-    (27, -135.0),
-    (36, -180.0),
-    (57, -210.0),
-    (75, -240.0),
-    (93, -260.0),
+    (27, -90.0),
+    (39, -120.0),
+    (51, -150.0),
+    (63, -180.0),
+    (78, -210.0),
+    (93, -240.0),
     (108, -270.0),
-    (126, -300.0),
-    (141, -325.0),
+    (129, -290.0),
+    (141, -315.0),
+    (150, -335.0),
     (159, -360.0),
-    (174, -375.0),
-    (186, -405.0),
-    (198, -435.0),
-    (204, -450.0),
+    (171, -385.0),
+    (180, -400.0),
+    (189, -425.0),
+    (198, -450.0),
 ]
+# Source face box center (OpenCV frontal-face detector on frame 228: box
+# 335,468 367x367) and the zoom. The window puts the box center at 44.9% of
+# the window height, where the earlier video had it.
+CROP = {"zoom": 1.7, "face_box_center": (518.5, 651.5), "face_box_y_in_window": 0.449}
 RING_START_DEG = -90.0
-CENTER_SOURCE_FRAME = 234
-FACE_CENTER_NORMALIZED = (0.5, 0.37)
+CENTER_SOURCE_FRAME = 228
+FACE_CENTER_NORMALIZED = (0.5, 0.36)
 DEADZONE_FRACTION_OF_RADIUS = 0.12
 
 
@@ -74,17 +84,30 @@ def source_frame_for_angle(angle: float) -> int:
     return int(round(float(np.interp(angle, angles[::-1], frames[::-1]))))
 
 
+def crop_window(width: int, height: int) -> tuple[int, int, int, int]:
+    """Return (x, y, w, h) of the 9:16 zoom window inside the source frame."""
+    w = int(round(width / CROP["zoom"]))
+    h = int(round(height / CROP["zoom"]))
+    cx, cy = CROP["face_box_center"]
+    x = int(round(min(max(cx - w / 2, 0), width - w)))
+    y = int(round(min(max(cy - CROP["face_box_y_in_window"] * h, 0), height - h)))
+    return x, y, w, h
+
+
 def read_frame(capture: cv2.VideoCapture, index: int) -> np.ndarray:
     capture.set(cv2.CAP_PROP_POS_FRAMES, index)
     ok, frame = capture.read()
     if not ok:
         raise SystemExit(f"Could not read source frame {index}")
-    return frame
+    x, y, w, h = crop_window(frame.shape[1], frame.shape[0])
+    return frame[y : y + h, x : x + w]
 
 
 def write_webp(path: Path, frame: np.ndarray, size: tuple[int, int], quality: int) -> int:
     if (frame.shape[1], frame.shape[0]) != size:
-        frame = cv2.resize(frame, size, interpolation=cv2.INTER_AREA)
+        # The zoom window is smaller than the output, so this can enlarge.
+        smaller = frame.shape[1] > size[0]
+        frame = cv2.resize(frame, size, interpolation=cv2.INTER_AREA if smaller else cv2.INTER_LANCZOS4)
     encoded, buffer = cv2.imencode(".webp", frame, [cv2.IMWRITE_WEBP_QUALITY, quality])
     if not encoded:
         raise SystemExit(f"Could not encode {path.name}")
@@ -164,6 +187,7 @@ def main() -> int:
         "source_fps": fps,
         "source_frame_count": total,
         "source_segment": [KEYFRAMES[0][0], KEYFRAMES[-1][0]],
+        "source_crop": dict(zip(("x", "y", "width", "height"), crop_window(width, height)), zoom=CROP["zoom"]),
         "dimensions": [out_w, out_h],
         "frame_count": args.count,
         "frame_order": "evenly spaced in screen angle; index increases counter-clockwise on screen",

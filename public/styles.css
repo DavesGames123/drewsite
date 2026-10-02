@@ -7,7 +7,7 @@
 
 /* ---------- tokens ---------- */
 :root {
-  --arch-field: rgb(245, 193, 30); /* sampled from the video background; main.js resets it from metadata */
+  --arch-field: rgb(239, 190, 49); /* sampled from the video background; main.js resets it from metadata */
   --night: #06142b;
   --night-rgb: 6, 20, 43;
   --navy: #003262;
@@ -217,8 +217,8 @@ html::after {
     mask-image: var(--fade);
   }
   /* The arch keeps its full size; Drew is drawn smaller inside it. The scale
-     is centered on her face (0.5, 0.37), so gaze and hand-off still line up. */
-  .portrait-canvas, .companion-canvas { transform: scale(0.8); transform-origin: 50% 37%; }
+     is centered on her face (0.5, 0.36), so gaze and hand-off still line up. */
+  .portrait-canvas, .companion-canvas { transform: scale(0.8); transform-origin: 50% 36%; }
   .portrait { position: absolute; top: 0; left: calc(50% - var(--slot-w) / 2); width: var(--slot-w); }
   .portrait-field { height: var(--slot-h); }
   .hero-copy {
