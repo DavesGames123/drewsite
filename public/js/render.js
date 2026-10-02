@@ -85,7 +85,7 @@ function renderHead(d) {
   // ("Statistics @ Berkeley | Class of ’28 | ...") is the second line.
   const title = d.name;
   const blurb = nonEmpty(d.about).join(" | ") || d.title;
-  const version = (site.image_version ?? 2);
+  const version = (site.image_version ?? 3);
   const [first, last] = nameParts(d.name);
   const person = {
     "@context": "https://schema.org",
