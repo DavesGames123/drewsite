@@ -82,6 +82,9 @@ body.is-editing [data-edit]:hover { outline: 1px solid var(--gold-light); backgr
 }
 .ed-list, .ed-group { margin: 16px 0 0; padding: 0; border: 0; min-width: 0; }
 .ed-group > .ed-object { padding-left: 12px; border-left: 1px solid var(--rule); }
+.ed-check { display: flex; align-items: center; gap: 10px; }
+.ed-check input { width: 18px; height: 18px; accent-color: var(--gold-light); }
+.ed-check label { margin: 0; }
 .ed-row { display: flex; align-items: flex-end; gap: 6px; }
 .ed-row .ed-field { flex: 1; margin-top: 6px; }
 .ed-card { margin-top: 10px; padding: 0 12px 12px; border: 1px solid var(--rule); }

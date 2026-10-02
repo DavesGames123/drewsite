@@ -31,6 +31,16 @@ const LOGOS = {
   LinkedIn: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
 };
 
+// Image logos: the file is a single-color mask; CSS colors it with currentColor.
+// key -> [path, width, height]; the ratio sets the link width.
+const IMAGE_LOGOS = {
+  berkeley: ["/icons/berkeley-logo-mask.svg", 215.125, 67.592],
+};
+
+// A link with hero_only: true shows only as a logo in the hero. The footer,
+// the print sheet, and the search metadata leave it out.
+const outbound = (d) => list(d.links).filter((l) => !l.hero_only);
+
 const SECTION_ORDER = ["profile", "experience", "education", "volunteering", "skills"];
 
 export function visibleSections(d) {
@@ -80,7 +90,7 @@ function renderHead(d) {
     url,
     image: `${url}icons/icon-512.png`,
     alumniOf: list(d.education).map((x) => ({ "@type": "CollegeOrUniversity", name: x.school })),
-    sameAs: list(d.links).map((l) => l.url),
+    sameAs: outbound(d).map((l) => l.url),
   };
   return [
     `<title>${e(title)}</title>`,
@@ -121,7 +131,14 @@ function renderMasthead(d) {
 // ---------- hero ----------
 function renderLinks(d) {
   const items = list(d.links).map((link, i) => {
-    const aria = `${d.name} on ${link.label} (opens in a new tab)`;
+    const aria = `${link.aria || `${d.name} on ${link.label}`} (opens in a new tab)`;
+    if (IMAGE_LOGOS[link.logo]) {
+      const [src, w, h] = IMAGE_LOGOS[link.logo];
+      return (
+        `  <a class="link-logo link-logo-wide link-logo-${e(link.logo)}" href="${e(link.url)}" target="_blank" rel="noopener" ` +
+        `aria-label="${e(aria)}" style="--logo: url(${src}); --logo-ratio: ${w} / ${h}"${ed(`links.${i}.url`)}></a>`
+      );
+    }
     if (LOGOS[link.label]) {
       return (
         `  <a class="link-logo link-logo-${e(link.label.toLowerCase())}" href="${e(link.url)}" target="_blank" rel="noopener" aria-label="${e(aria)}"${ed(`links.${i}.url`)}>` +
@@ -269,7 +286,7 @@ function renderFooterName(d) {
 }
 
 function renderFooterLinks(d) {
-  return list(d.links)
+  return outbound(d)
     .map((l) => `<a href="${e(l.url)}" target="_blank" rel="noopener">${e(l.label)}<span class="visually-hidden"> (opens in a new tab)</span></a>`)
     .join("\n");
 }
@@ -308,7 +325,7 @@ function renderPrint(d) {
   const facts = list(d.facts)
     .map((f) => `<div><p class="ps-label">${e(f.label)}</p><p>${e(f.value)}${f.sub ? `<br /><span class="ps-soft">${e(f.sub)}</span>` : ""}</p></div>`)
     .join("");
-  const links = list(d.links)
+  const links = outbound(d)
     .map((l) => `<li><span class="ps-side-k">${e(l.label)}</span>${e(l.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, ""))}</li>`)
     .join("");
   const side = (title, items, cls = "ps-side-list") => (li(items) ? `<h2 class="ps-side-h">${title}</h2><ul class="${cls}">${li(items)}</ul>` : "");

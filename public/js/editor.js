@@ -32,6 +32,7 @@ const LABELS = {
   text: "Text", emphasis: "Gold text", facts: "Profile facts", label: "Label", value: "Value", sub: "Second line",
   links: "Links", url: "Address (https://…)", sections: "Section names", profile: "Profile", experience: "Experience",
   education: "Education", volunteering: "Volunteering", skills: "Skills", honors: "Honors", site: "Site",
+  logo: "Logo (berkeley, or empty)", hero_only: "Logo in the hero only", aria: "Screen-reader name",
   domain: "Domain", description: "Search description", role: "Role", organization: "Organization", type: "Type",
   location: "Location", dates: "Dates", points: "Points", school: "School", studies: "Studies", details: "Details",
 };
@@ -140,6 +141,13 @@ function el(tag, attrs = {}, ...children) {
   return node;
 }
 
+function checkField(path, key) {
+  const id = `edit-${path.replace(/\./g, "-")}`;
+  const input = el("input", { id, type: "checkbox", "data-path": path, onchange: (ev) => { setAt(state.draft, path, ev.target.checked); changed(); } });
+  input.checked = Boolean(getAt(state.draft, path));
+  return el("div", { class: "ed-field ed-check" }, input, el("label", { for: id }, labelFor(key)));
+}
+
 function textField(path, key) {
   const id = `edit-${path.replace(/\./g, "-")}`;
   const value = getAt(state.draft, path) ?? "";
@@ -188,6 +196,7 @@ function objectFields(path) {
     const child = path ? `${path}.${key}` : key;
     if (Array.isArray(value)) box.append(listField(child, key));
     else if (value && typeof value === "object") box.append(el("fieldset", { class: "ed-group" }, el("legend", {}, labelFor(key)), objectFields(child)));
+    else if (typeof value === "boolean") box.append(checkField(child, key));
     else box.append(textField(child, key));
   }
   return box;

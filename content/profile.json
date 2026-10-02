@@ -25,16 +25,38 @@
   ],
   "links": [
     {
+      "label": "UC Berkeley",
+      "url": "https://statistics.berkeley.edu/",
+      "logo": "berkeley",
+      "hero_only": true,
+      "aria": "UC Berkeley Department of Statistics"
+    },
+    {
       "label": "LinkedIn",
       "url": "https://www.linkedin.com/in/drew-estelle-watkins-687743427/"
     }
   ],
   "sections": {
-    "profile": { "label": "Profile", "title": "Profile" },
-    "experience": { "label": "Career", "title": "Experience" },
-    "education": { "label": "Study", "title": "Education" },
-    "volunteering": { "label": "Service", "title": "Volunteering" },
-    "skills": { "label": "Capabilities", "title": "Skills & honors" }
+    "profile": {
+      "label": "Profile",
+      "title": "Profile"
+    },
+    "experience": {
+      "label": "Career",
+      "title": "Experience"
+    },
+    "education": {
+      "label": "Study",
+      "title": "Education"
+    },
+    "volunteering": {
+      "label": "Service",
+      "title": "Volunteering"
+    },
+    "skills": {
+      "label": "Capabilities",
+      "title": "Skills & honors"
+    }
   },
   "experience": [],
   "education": [

@@ -505,6 +505,7 @@ html::after {
   -webkit-mask: var(--logo) center / contain no-repeat;
   mask: var(--logo) center / contain no-repeat;
 }
+.link-logo-berkeley:hover, .link-logo-berkeley:focus-visible { color: #fdb515; transform: translateY(-2px); }
 .link-sep { align-self: stretch; width: 1px; background: rgba(246, 239, 227, 0.4); margin: 4px 0; }
 
 /* ---------- one-column sections (Drew) ----------
