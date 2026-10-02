@@ -18,7 +18,7 @@ public/js/main.js             portrait player: modes, smoothing, frame selection
 public/js/{manifest,renderer,controller,stage,companion}.js   portrait runtime
 public/frames/                frame_000.webp ... frame_063.webp, metadata.json
 public/center.webp            frontal frame with direct eye contact
-public/assets/drew/drew_still.png   still fallback (opaque frame 234)
+public/assets/drew/drew_still.png   still fallback (opaque frame 228)
 scripts/render_content.mjs    profile.json -> index.html (--check: stale test)
 scripts/edit_lock.mjs         set the editor password; seal the GitHub token
 scripts/extract_video_frames.py   video -> cutout frames, center.webp, metadata
@@ -116,10 +116,12 @@ The current video segments are as follows:
 
 | Source frames | Content | Use |
 |---|---|---|
-| 0–11 | frontal pose, then the eyes lift | not used |
-| 12–204 | one full look-around, counter-clockwise on screen | ring frames |
-| 205–221 | a blink and the return to the front | not used |
-| 222–238 | frontal pose with eye contact | frame 234 is `center.webp` |
+| 0–26 | frontal pose and a blink | not used |
+| 27–198 | one full look-around, counter-clockwise on screen | ring frames |
+| 199–221 | the return to the front | not used |
+| 222–239 | frontal pose with eye contact | frame 228 is `center.webp` |
+
+The video frames Drew from the waist up. `CROP` in the extractor zooms 1.7× into a fixed 9:16 window around the face (x 201, y 145, 635 × 1129 px) before the matte. To change the zoom, edit `CROP["zoom"]` and run the extractor again.
 
 Ring index `i` has the screen angle `-90° - i × 5.625°`. Index 0 looks up, 16 looks left, 32 looks down, and 48 looks right.
 
@@ -138,7 +140,7 @@ swiftc -O -o /tmp/print_webkit scripts/print_webkit.swift
 
 ## Color scheme
 
-The gold of the studio arch is `rgb(245, 193, 30)`, sampled from the video background. `main.js` sets `--arch-field` from `frames/metadata.json`. The page is navy `#06142b`. The print sheet uses a gold top rule and a Berkeley blue (`#003262`) card. The cutout keeps its soft gold edge pixels, so they land gold-on-gold on the arch.
+The gold of the studio arch is `rgb(239, 190, 49)`, sampled from the video background. `main.js` sets `--arch-field` from `frames/metadata.json`. The page is navy `#06142b`. The print sheet uses a gold top rule and a Berkeley blue (`#003262`) card. The cutout keeps its soft gold edge pixels, so they land gold-on-gold on the arch.
 
 ## Validation
 
