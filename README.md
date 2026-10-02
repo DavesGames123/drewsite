@@ -1,8 +1,10 @@
 # Drew Watkins — résumé site
 
-This is a static, single-page résumé at https://drewwatkins.com. It has an interactive portrait and a password-gated editor. The layout and the portrait runtime are the same as lilysite. The color scheme is blue and gold.
+This is a static, single-page résumé at https://drewwatkins.com. It has a portrait area and a password-gated editor. The layout and the portrait runtime are the same as lilysite. The color scheme is blue and gold.
 
-The portrait is a ring of 64 frames from one character video. A canvas shows one frame at a time. The cursor angle around Drew's face selects the frame.
+The portrait area has no photo at this time. The page shows an empty gold studio arch where the portrait goes. The earlier AI-generated portrait was removed, and real photos of Drew replace it later (see "Install real photos").
+
+The portrait runtime stays in place. It plays a ring of frames from one video: a canvas shows one frame at a time, and the cursor angle around the face selects the frame. It can also show one still photo.
 
 ## Layout
 
@@ -16,9 +18,9 @@ public/styles.css             palette, layout, portrait surface, print sheet
 public/editor.css             editor switch, dialog, and panel
 public/js/main.js             portrait player: modes, smoothing, frame selection
 public/js/{manifest,renderer,controller,stage,companion}.js   portrait runtime
-public/frames/                frame_000.webp ... frame_063.webp, metadata.json
-public/center.webp            frontal frame with direct eye contact
-public/assets/drew/drew_still.png   still fallback (opaque frame 228)
+(not installed) public/frames/       frame ring: frame_NNN.webp, metadata.json
+(not installed) public/center.webp   ring frame with direct eye contact
+(not installed) public/assets/drew/drew_still.png   one still photo
 scripts/render_content.mjs    profile.json -> index.html (--check: stale test)
 scripts/edit_lock.mjs         set the editor password; seal the GitHub token
 scripts/extract_video_frames.py   video -> cutout frames, center.webp, metadata
@@ -34,7 +36,30 @@ scripts/build_dist.sh         public/ -> dist/ for GitHub Pages
 python3 -m http.server 4173 -d public
 ```
 
-Open `http://localhost:4173/`. To see the still fallback, open `http://localhost:4173/?portrait=static`.
+Open `http://localhost:4173/`. To see the still photo without the ring, open `http://localhost:4173/?portrait=static`.
+
+The portrait mode shows on `<figure id="portrait" data-mode>`:
+
+| Mode | Installed files | The page shows |
+|---|---|---|
+| `empty` | none (now) | the gold arch only; the cue says "Photo coming soon" |
+| `fallback` | `drew_still.png` | the still photo in the arch |
+| `ring` | `frames/` and `center.webp` | the frame that follows the cursor |
+
+## Install real photos
+
+The site has no photo of Drew now. Use only real photos that Drew approves. Do not use generated or AI-changed images.
+
+To show one still photo:
+
+1. Save the photo as a PNG at `public/assets/drew/drew_still.png`. A portrait crop is best. The runtime puts the photo at the bottom of the 9:16 field and fills the space above it with the top-row color of the photo.
+2. To put the photo on the printed résumé, save a copy in `public/`. Then set `PRINT_PHOTO` near the top of `public/js/render.js` to its path, for example `"/drew-print.jpg"`.
+3. Run `node scripts/render_content.mjs`.
+4. Run the checks in "Validation". The browser checks find the photo and check `fallback` mode.
+
+To show a frame ring from real video, use the steps in "Make a frame ring from a video".
+
+`scripts/make_og.mjs` makes the link preview card from the page. After you install a photo, run it again, and add 1 to `image_version` (default 4, in `render.js`). Without the new version, link previews keep the old card.
 
 ## Edit the site (for Drew)
 
@@ -94,7 +119,7 @@ The status on 2026-10-01: steps 1 to 4 are complete. Use the steps again if the 
 4. In the same Pages settings, set Custom domain to `drewwatkins.com`. After the certificate is issued, select "Enforce HTTPS".
 5. Push to `main`.
 6. Open the Actions tab, and make sure that the "pages" run completes.
-7. Open https://drewwatkins.com, and make sure that the portrait follows the cursor.
+7. Open https://drewwatkins.com, and make sure that the portrait area shows the installed photo, or the empty gold arch if none is installed.
 
 ## Change the content without the editor
 
@@ -104,7 +129,7 @@ The status on 2026-10-01: steps 1 to 4 are complete. Use the steps again if the 
 
 The page is static HTML, so the résumé reads and prints without JavaScript.
 
-## Replace the character video and extract frames
+## Make a frame ring from a video
 
 1. Copy the new video to `public/character.mp4`. The video must be 9:16.
 2. Install the requirements: `python3 -m pip install -r requirements.txt`.
@@ -115,24 +140,13 @@ The page is static HTML, so the résumé reads and prints without JavaScript.
 
 The extractor needs macOS for the Vision matte. Without the matte, it writes opaque frames.
 
-The current video segments are as follows:
-
-| Source frames | Content | Use |
-|---|---|---|
-| 0–26 | frontal pose and a blink | not used |
-| 27–198 | one full look-around, counter-clockwise on screen | ring frames |
-| 199–221 | the return to the front | not used |
-| 222–239 | frontal pose with eye contact | frame 228 is `center.webp` |
-
-The video frames Drew from the waist up. `CROP` in the extractor zooms 1.7× into a fixed 9:16 window around the face (x 201, y 145, 635 × 1129 px) before the matte. To change the zoom, edit `CROP["zoom"]` and run the extractor again.
-
-Ring index `i` has the screen angle `-90° - i × 5.625°`. Index 0 looks up, 16 looks left, 32 looks down, and 48 looks right.
+`KEYFRAMES`, `CENTER_SOURCE_FRAME`, and `CROP` in the extractor still hold the values for the removed video. Set them for the new video before you run the extractor.
 
 ## Print
 
 The printed résumé is a US Letter sheet, not the screen layout. `render.js` writes the `.print-sheet` block from `profile.json`, and only `@media print` shows it.
 
-The footer link "Résumé (PDF)" downloads `/drew-watkins-resume.pdf`. The deploy makes this file: `scripts/build_pdf.mjs` prints the served `dist/` page in headless Chrome, with no browser header or footer. Thus an edit from the editor reaches the PDF in the same deploy. The script stops the deploy if the PDF is not 1 or 2 pages. The file is not in `public/`, so the link gives a 404 on a local server of `public/`. To make the PDF locally:
+The footer link "Résumé (PDF)" downloads `/drew-watkins-resume.pdf`. The deploy makes this file: `scripts/build_pdf.mjs` prints the served `dist/` page in headless Chrome, with no browser header or footer. Thus an edit from the editor reaches the PDF in the same deploy. The script stops the deploy if the PDF is not 1 or 2 pages. The sheet has a headshot only when `PRINT_PHOTO` in `render.js` is set. It is empty now. The file is not in `public/`, so the link gives a 404 on a local server of `public/`. To make the PDF locally:
 
 ```bash
 bash scripts/build_dist.sh
@@ -153,7 +167,7 @@ swiftc -O -o /tmp/print_webkit scripts/print_webkit.swift
 
 ## Color scheme
 
-The accent is Berkeley California Gold `#fdb515` (`--gold-light`), and hairlines use Berkeley Medalist `#c4820e` (`--gold`). The studio arch is California Gold too (`--arch-gold`). The video gold `rgb(239, 190, 49)` stays in `--arch-field` for the opaque-frame fallback and the print edge, and `main.js` sets `--arch-field` from `frames/metadata.json`. The page is navy `#06142b`, and the Skills & honors band is Berkeley Blue `#003262` (`--navy`). The print sheet uses a gold top rule and a Berkeley blue (`#003262`) card. The cutout keeps its soft gold edge pixels, so they land gold-on-gold on the arch.
+The accent is Berkeley California Gold `#fdb515` (`--gold-light`), and hairlines use Berkeley Medalist `#c4820e` (`--gold`). The studio arch is California Gold too (`--arch-gold`). The gold `rgb(239, 190, 49)` in `--arch-field` is the field behind an opaque still photo, and the print edge. When a frame ring is installed, `main.js` sets `--arch-field` from `frames/metadata.json`. The page is navy `#06142b`, and the Skills & honors band is Berkeley Blue `#003262` (`--navy`). The print sheet uses a gold top rule and a Berkeley blue (`#003262`) card. A matted ring cutout keeps its soft edge pixels from the video background.
 
 ## Validation
 
@@ -164,4 +178,6 @@ python3 -m http.server 4173 -d public &
 EDIT_PASSWORD='…' node scripts/verify_browser.mjs --shots /tmp/drew-shots
 ```
 
-`verify_browser.mjs` needs Google Chrome. It runs the editor checks only when `EDIT_PASSWORD` is set, so the password never goes into the repository.
+`verify_browser.mjs` needs Google Chrome. It runs the editor checks only when `EDIT_PASSWORD` is set, so the password never goes into the repository. It runs the frame-ring checks only when `public/frames/` has a frame set. In the other case, it checks the `empty` or `fallback` mode.
+
+`check_site.py` checks a frame set only when one is installed. It prints a NOTE when the frame set or the still photo is absent.
