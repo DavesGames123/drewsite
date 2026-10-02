@@ -151,16 +151,17 @@ try {
   check(Math.abs(ratio[0] - 9 / 16) < 0.002 && Math.abs(ratio[1] - 9 / 16) < 0.01, "desktop: canvas keeps 9:16 (pixels and CSS box)", ratio.map((v) => v.toFixed(4)).join(" / "));
   const corners = await evaluate(`(() => { const c = document.getElementById("portrait-canvas"); const x = c.getContext("2d"); const px = (a, b) => x.getImageData(a, b, 1, 1).data[3]; return [px(4, 4), px(c.width - 5, 4), px(4, c.height / 2), px(c.width / 2, c.height / 2)]; })()`);
   check(corners[0] === 0 && corners[1] === 0 && corners[2] === 0 && corners[3] === 255, "cutout: frame corners transparent, face opaque (no rectangle)", JSON.stringify(corners));
-  // Studio arch: an arch of the video gold behind her silhouette, navy elsewhere.
+  // Studio arch: an arch of California Gold behind her silhouette, navy elsewhere.
   const studio = await evaluate(`(() => {
     const f = document.getElementById("portrait-field").getBoundingClientRect();
     const r = document.querySelector(".studio-arch").getBoundingClientRect();
     const cs = getComputedStyle(document.querySelector(".studio-arch"));
-    return { covers: r.left < f.left && r.right > f.right && r.top < f.top, bg: cs.backgroundColor, body: getComputedStyle(document.documentElement).backgroundColor };
+    return { covers: r.left < f.left && r.right > f.right && r.top < f.top, bg: cs.backgroundColor, body: getComputedStyle(document.documentElement).backgroundColor, field: getComputedStyle(document.documentElement).getPropertyValue("--arch-field").trim() };
   })()`);
-  // The arch takes the gold that the extractor sampled from the video (metadata background_rgb).
-  const sampled = (await evaluate(`fetch("/frames/metadata.json").then(r => r.json())`)).background_rgb.join(", ");
-  check(studio.covers && studio.bg.includes(sampled) && /6, 20, 43/.test(studio.body), "studio: arch in the sampled video gold behind the silhouette, navy page", JSON.stringify({ ...studio, sampled }));
+  // The arch is California Gold #fdb515. --arch-field keeps the gold that the extractor sampled
+  // from the video (metadata background_rgb), for the opaque-frame fallback and the print edge.
+  const sampled = (await evaluate(`fetch("/frames/metadata.json").then(r => r.json())`)).background_rgb.join(",");
+  check(studio.covers && studio.bg === "rgb(253, 181, 21)" && studio.field.replace(/\s/g, "").includes(sampled) && /6, 20, 43/.test(studio.body), "studio: California Gold arch behind the silhouette, video gold in --arch-field, navy page", JSON.stringify({ ...studio, sampled }));
   const anims = await evaluate(`document.getAnimations().map(a => a.animationName || a.constructor.name)`);
   check(anims.length === 0, "motion: no CSS animations run (only the cursor drives the portrait)", JSON.stringify(anims));
   await shot("desktop-hero");

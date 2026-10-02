@@ -8,10 +8,10 @@
 /* ---------- tokens ---------- */
 :root {
   --arch-field: rgb(239, 190, 49); /* sampled from the video background; main.js resets it from metadata */
+  --arch-gold: #fdb515; /* Berkeley California Gold: the studio arch behind the cutout */
   --night: #06142b;
   --night-rgb: 6, 20, 43;
   --navy: #003262;
-  --blue: #0d3b8c;
   --blue-light: #7fb0ff;
   --cream: #f6efe3;
   --cream-2: rgba(246, 239, 227, 0.72);
@@ -119,14 +119,14 @@ h1 em { font-style: italic; color: var(--gold-light); }
   position: relative; display: block; width: 100%; aspect-ratio: 9 / 16;
   outline-offset: 10px; -webkit-tap-highlight-color: transparent;
 }
-/* Studio arch: a soft arch of the video's gold just behind her head and hair,
-   down to the chest. Her cutout's soft edge pixels came from that gold, so
-   they land gold-on-gold. The arch is static; the browser blurs it once at
-   full resolution. */
+/* Studio arch: a soft arch of California Gold just behind her head and hair,
+   down to the chest. Her cutout's soft edge pixels came from the video gold,
+   which is near enough to California Gold to land gold-on-gold. The arch is
+   static; the browser blurs it once at full resolution. */
 .studio-arch {
   position: absolute; pointer-events: none;
   left: -6%; right: -6%; top: -5%; bottom: 12%;
-  background: var(--arch-field);
+  background: var(--arch-gold);
   border-radius: 50% 50% 16% 16% / 27% 27% 9% 9%;
   filter: blur(calc(var(--studio-w, 400px) * 0.035));
   -webkit-mask-image: linear-gradient(to bottom, #000 66%, transparent 100%);
@@ -301,7 +301,7 @@ html::after {
 .vol .entry-role { font-size: clamp(1.6rem, 2.3vw, 2.05rem); }
 
 /* ---------- skills ---------- */
-.section-skills { background: var(--blue); border-top: 0; }
+.section-skills { background: var(--navy); border-top: 0; }
 .section-skills .label { color: rgba(246, 239, 227, 0.75); }
 .section-skills .label-num { color: var(--gold-light); }
 .skills-grid { display: grid; grid-template-columns: 2fr 1fr; gap: clamp(36px, 5vw, 80px); }

@@ -150,7 +150,7 @@ swiftc -O -o /tmp/print_webkit scripts/print_webkit.swift
 
 ## Color scheme
 
-The accent is Berkeley California Gold `#fdb515` (`--gold-light`), and hairlines use Berkeley Medalist `#c4820e` (`--gold`). The gold of the studio arch is `rgb(239, 190, 49)`, sampled from the video background. `main.js` sets `--arch-field` from `frames/metadata.json`. The page is navy `#06142b`. The print sheet uses a gold top rule and a Berkeley blue (`#003262`) card. The cutout keeps its soft gold edge pixels, so they land gold-on-gold on the arch.
+The accent is Berkeley California Gold `#fdb515` (`--gold-light`), and hairlines use Berkeley Medalist `#c4820e` (`--gold`). The studio arch is California Gold too (`--arch-gold`). The video gold `rgb(239, 190, 49)` stays in `--arch-field` for the opaque-frame fallback and the print edge, and `main.js` sets `--arch-field` from `frames/metadata.json`. The page is navy `#06142b`, and the Skills & honors band is Berkeley Blue `#003262` (`--navy`). The print sheet uses a gold top rule and a Berkeley blue (`#003262`) card. The cutout keeps its soft gold edge pixels, so they land gold-on-gold on the arch.
 
 ## Validation
 
