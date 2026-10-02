@@ -81,6 +81,17 @@ def main() -> int:
         hits = re.findall(pattern, haystack, flags=re.I)
         check(not hits, f"no fabricated contact: {label}", ", ".join(map(str, hits[:3])))
 
+    # A hero_only link (a logo such as UC Berkeley) shows only in the hero.
+    def region(name: str) -> str:
+        m = re.search(rf"<!-- render:{name} -->(.*?)<!-- /render:{name} -->", html, re.S)
+        return m.group(1) if m else ""
+    hero_only = [l["url"] for l in profile.get("links", []) if l.get("hero_only")]
+    leaks = [u for u in hero_only if u not in region("hero") or u in region("footer-links") or u in region("print")]
+    check(not leaks, "links: hero-only logo links show in the hero only", ", ".join(leaks))
+    logos = [l["logo"] for l in profile.get("links", []) if l.get("logo")]
+    absent = [g for g in logos if not (PUBLIC / "icons" / f"{g}-logo-mask.svg").exists()]
+    check(not absent, "links: every logo link has its mask file in public/icons", ", ".join(absent))
+
     code = {p.name: p.read_text(encoding="utf-8") for p in [PUBLIC / "styles.css", *sorted((PUBLIC / "js").glob("*.js"))]}
     banned = r"(perspective|rotate[XYZ3]?\s*\(|rotate\s*:|matrix3d|translate3d|translateZ|preserve-3d|backface-visibility)"
     hits = [f"{n}:{m.group(0)}" for n, src in code.items() for m in re.finditer(banned, src)]
