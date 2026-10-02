@@ -123,9 +123,22 @@ The current video segments are as follows:
 
 Ring index `i` has the screen angle `-90° - i × 5.625°`. Index 0 looks up, 16 looks left, 32 looks down, and 48 looks right.
 
+## Print
+
+"Print résumé" prints a US Letter résumé, not the screen layout. `render.js` writes the `.print-sheet` block from `profile.json`, and only `@media print` shows it.
+
+The sheet flows. The browser makes as many pages as the content needs, so the current profile prints on 1 page. A blue card with skills, honors, and links floats at the right of the main column. The sheet has no fixed page height, needs no `@page` margins, and uses no CSS mask. For this reason, it prints the same in Chrome, Safari, and Firefox.
+
+To see the Safari result, run `scripts/print_webkit.swift`:
+
+```bash
+swiftc -O -o /tmp/print_webkit scripts/print_webkit.swift
+/tmp/print_webkit http://localhost:4173/ /tmp/resume-webkit.pdf
+```
+
 ## Color scheme
 
-The gold of the studio arch is `rgb(245, 193, 30)`, sampled from the video background. `main.js` sets `--arch-field` from `frames/metadata.json`. The page is navy `#06142b`. The print sheet uses a gold edge and a Berkeley blue (`#003262`) side panel. The cutout keeps its soft gold edge pixels, so they land gold-on-gold on the arch.
+The gold of the studio arch is `rgb(245, 193, 30)`, sampled from the video background. `main.js` sets `--arch-field` from `frames/metadata.json`. The page is navy `#06142b`. The print sheet uses a gold top rule and a Berkeley blue (`#003262`) card. The cutout keeps its soft gold edge pixels, so they land gold-on-gold on the arch.
 
 ## Validation
 
