@@ -1,0 +1,67 @@
+{
+  "name": "Drew Watkins",
+  "title": "Statistics Student",
+  "statement": "Statistics student at the University of California, Berkeley. Transferred to Berkeley after graduating from Cañada College in May 2026.",
+  "about": [
+    "Statistics",
+    "UC Berkeley",
+    "Cañada College"
+  ],
+  "headline": {
+    "text": "Statistics at UC Berkeley,",
+    "emphasis": "by way of Cañada College."
+  },
+  "facts": [
+    {
+      "label": "Current",
+      "value": "University of California, Berkeley",
+      "sub": "Statistics"
+    },
+    {
+      "label": "Previously",
+      "value": "Cañada College",
+      "sub": "Graduated May 2026"
+    }
+  ],
+  "links": [
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/drew-estelle-watkins-687743427/"
+    }
+  ],
+  "sections": {
+    "profile": { "label": "Profile", "title": "Profile" },
+    "experience": { "label": "Career", "title": "Experience" },
+    "education": { "label": "Study", "title": "Education" },
+    "volunteering": { "label": "Service", "title": "Volunteering" },
+    "skills": { "label": "Capabilities", "title": "Skills & honors" }
+  },
+  "experience": [],
+  "education": [
+    {
+      "school": "University of California, Berkeley",
+      "dates": "2026 – Present",
+      "studies": [
+        "Statistics"
+      ],
+      "details": [
+        "Transfer student"
+      ]
+    },
+    {
+      "school": "Cañada College",
+      "dates": "Graduated May 2026",
+      "studies": [],
+      "details": [
+        "Transferred to UC Berkeley"
+      ]
+    }
+  ],
+  "volunteering": [],
+  "skills": [],
+  "honors": [],
+  "site": {
+    "domain": "drewwatkins.com",
+    "description": "Drew Watkins, statistics student at the University of California, Berkeley. Cañada College graduate."
+  }
+}

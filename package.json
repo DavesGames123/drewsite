@@ -1,0 +1,6 @@
+{
+  "name": "drewsite",
+  "private": true,
+  "type": "module",
+  "description": "Drew Watkins résumé site. No npm dependencies; package.json only marks public/js as ES modules for Node."
+}
