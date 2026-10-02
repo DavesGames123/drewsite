@@ -120,6 +120,12 @@ def main() -> int:
         print("NOTE  source: public/character.mp4 absent (not needed to serve the site)")
     check((PUBLIC / "assets/drew/drew_still.png").exists(), "fallback: still portrait present")
 
+    # The footer links to the PDF that the pages workflow prints into dist/.
+    pdf = "drew-watkins-resume.pdf"
+    workflow = (ROOT / ".github/workflows/pages.yml").read_text(encoding="utf-8")
+    check(re.search(rf'<a [^>]*href="/{pdf}"[^>]*download', html) is not None, f"pdf: the footer links to /{pdf} as a download")
+    check("build_pdf.mjs" in workflow and f"--out dist/{pdf}" in workflow, f"pdf: the pages workflow builds dist/{pdf}")
+
     lock_path = PUBLIC / "edit/lock.json"
     lock = json.loads(lock_path.read_text(encoding="utf-8")) if lock_path.exists() else {}
     check(bool(lock.get("verifier", {}).get("hash")) and lock.get("kdf", {}).get("iterations", 0) >= 600000,

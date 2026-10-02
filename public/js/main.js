@@ -213,8 +213,6 @@ async function start() {
   reducedMotion.addEventListener("change", applyMotionPreference);
 }
 
-document.getElementById("print-page")?.addEventListener("click", () => window.print());
-
 // Read-only snapshot for automated checks (see scripts/verify_browser.mjs).
 Object.defineProperty(window, "__portrait", {
   get: () => ({
