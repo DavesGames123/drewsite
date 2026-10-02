@@ -1,11 +1,11 @@
 {
   "name": "Drew Watkins",
   "title": "Statistics Student",
-  "statement": "Statistics student at the University of California, Berkeley. Transferred to Berkeley after graduating from Cañada College in May 2026.",
+  "statement": "Statistics, to me, is the study of organizing complex information and finding ways to tell stories that drive decision-making.",
   "about": [
-    "Statistics",
-    "UC Berkeley",
-    "Cañada College"
+    "Statistics @ Berkeley",
+    "Class of ’28",
+    "San Francisco Bay Area"
   ],
   "headline": {
     "text": "Statistics at UC Berkeley,",
@@ -15,12 +15,17 @@
     {
       "label": "Current",
       "value": "University of California, Berkeley",
-      "sub": "Statistics"
+      "sub": "B.S. Statistics · Class of 2028"
     },
     {
       "label": "Previously",
       "value": "Cañada College",
-      "sub": "Graduated May 2026"
+      "sub": "A.S. Mathematics and Economics"
+    },
+    {
+      "label": "Seeking",
+      "value": "Part-time data roles and Data Analysis internships",
+      "sub": "Fall 2026 or Summer 2027"
     }
   ],
   "links": [
@@ -33,7 +38,7 @@
     },
     {
       "label": "LinkedIn",
-      "url": "https://www.linkedin.com/in/drew-estelle-watkins-687743427/"
+      "url": "https://www.linkedin.com/in/drewewatkins/"
     }
   ],
   "sections": {
@@ -50,40 +55,111 @@
       "title": "Education"
     },
     "volunteering": {
-      "label": "Service",
-      "title": "Volunteering"
+      "label": "Organizations",
+      "title": "Leadership"
     },
     "skills": {
       "label": "Capabilities",
       "title": "Skills & honors"
     }
   },
-  "experience": [],
+  "experience": [
+    {
+      "role": "PRIE | Student Assistant",
+      "organization": "San Mateo County Community College District",
+      "type": "Part-time · Hybrid",
+      "location": "Redwood City, California",
+      "dates": "Aug 2025 – May 2026",
+      "points": [
+        "Planning, Research, and Institutional Effectiveness (PRIE)",
+        "Reviewed Cañada College's ISER accreditation report",
+        "Analyzed enrollment and outcome data from online courses to evaluate accessibility in degree and certificate completion using Excel"
+      ],
+      "skills": [
+        "Proofreading",
+        "Microsoft Excel"
+      ]
+    },
+    {
+      "role": "Senior Tutor",
+      "organization": "San Mateo County Community College District",
+      "type": "Part-time",
+      "location": "Redwood City, California",
+      "dates": "Aug 2023 – May 2026",
+      "points": [
+        "Delivered one-on-one and online tutoring sessions in Calculus, Statistics, and Economics to over 20+ students every semester",
+        "Assessed student progress and adapted instructional approach to address individual learning gaps"
+      ],
+      "skills": [
+        "Microsoft Excel",
+        "Microsoft PowerPoint"
+      ]
+    },
+    {
+      "role": "Additional Experience",
+      "organization": "Big Lots · Credit Adjustments · Allied Moulding · Kamco",
+      "type": "Full-time",
+      "location": "",
+      "dates": "Sep 2016 – Oct 2020",
+      "points": [
+        "IT Support Specialist, Big Lots (Jan 2020 – Oct 2020)",
+        "Collections Specialist, Credit Adjustments (Jul 2018 – Nov 2019)",
+        "Material Handler, Allied Moulding (Oct 2017 – Jul 2018)",
+        "IT Support Specialist, Kamco (Sep 2016 – Oct 2017)"
+      ],
+      "skills": [
+        "Microsoft Excel",
+        "Microsoft PowerPoint"
+      ]
+    }
+  ],
   "education": [
     {
       "school": "University of California, Berkeley",
-      "dates": "2026 – Present",
+      "dates": "Aug 2026 – May 2028",
       "studies": [
-        "Statistics"
+        "Bachelor of Science, Statistics"
       ],
       "details": [
-        "Transfer student"
+        "Junior standing",
+        "Planned graduation: Spring 2028"
       ]
     },
     {
       "school": "Cañada College",
-      "dates": "Graduated May 2026",
-      "studies": [],
+      "dates": "Aug 2022 – May 2026",
+      "studies": [
+        "Associate of Science, Mathematics and Economics"
+      ],
       "details": [
-        "Transferred to UC Berkeley"
+        "Phi Theta Kappa Honors Society"
       ]
     }
   ],
-  "volunteering": [],
-  "skills": [],
-  "honors": [],
+  "volunteering": [
+    {
+      "role": "Nevada/California Regional Vice President",
+      "organization": "Phi Theta Kappa · Cañada College",
+      "dates": "Apr 2025 – Dec 2025",
+      "points": [
+        "Co-hosted bi-annual leadership conference for 200+ attendees",
+        "Hosted 3 separate informational forums for an audience of 40+ people"
+      ]
+    }
+  ],
+  "skills": [
+    "Microsoft Excel",
+    "Python",
+    "Data Analysis",
+    "Microsoft PowerPoint",
+    "Proofreading",
+    "Customer Engagement"
+  ],
+  "honors": [
+    "Phi Theta Kappa Honors Society"
+  ],
   "site": {
     "domain": "drewwatkins.com",
-    "description": "Drew Watkins, statistics student at the University of California, Berkeley. Cañada College graduate."
+    "description": "Drew Watkins, Statistics student at UC Berkeley, Class of 2028. Tutor and institutional research assistant; seeking data analysis internships."
   }
 }
