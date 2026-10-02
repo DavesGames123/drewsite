@@ -1,5 +1,5 @@
 // Capture the social card (public/icons/og-image.jpg, 1200x630): the real hero,
-// Drew's face in the studio arch beside her name. Needs the site on :4173 and Chrome.
+// the studio arch (and the portrait, if one is installed) beside her name. Needs the site on :4173 and Chrome.
 //   node scripts/make_og.mjs [--url http://localhost:4173/]
 import { spawn } from "node:child_process";
 import { mkdtempSync, writeFileSync } from "node:fs";
