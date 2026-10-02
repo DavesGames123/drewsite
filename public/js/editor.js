@@ -10,7 +10,8 @@
 //   4. Publish decrypts the sealed GitHub token with the password and commits
 //      content/profile.json through the GitHub contents API. The Pages
 //      workflow then renders and deploys the site (about 1-2 minutes).
-//      Without a sealed token, Publish downloads profile.json instead.
+//      Without a sealed token, the panel shows "Download edits" instead:
+//      saveEdits writes the draft to profile.json for the site owner.
 //
 // The draft is kept in localStorage, so a reload does not lose an edit. The
 // password and the token stay in memory only, and only while edit mode is on.
@@ -20,6 +21,7 @@
 //   buildForm        profile -> form fields; TEMPLATES for new list items
 //   rerender         region replacement between the render comments
 //   publish          sealed token -> GitHub contents API PUT
+//   saveEdits        no sealed token -> download profile.json
 //   LABELS           field names shown in the panel
 import { REGIONS } from "./render.js";
 
@@ -244,12 +246,16 @@ function buildPanel() {
       el("p", { class: "ed-title" }, "Edit site"),
       el("p", { class: "ed-dirty", "data-dirty": "" }, "No changes"),
       el("button", { type: "button", class: "ed-close", onclick: () => setEditing(false) }, "Close")),
-    el("p", { class: "ed-hint" }, "Click any text on the page to jump to its field. Changes show at once; visitors see them after you publish."),
+    el("p", { class: "ed-hint" }, sealed
+      ? "Click any text on the page to jump to its field. Changes show at once; visitors see them after you publish."
+      : "Click any text on the page to jump to its field. Changes show at once in this browser only. When you are done, download the edits and send profile.json to the site owner."),
     el("div", { class: "ed-actions" },
-      el("button", { type: "button", class: "ed-primary", onclick: publish }, sealed ? "Publish" : "Download profile.json"),
-      el("button", { type: "button", onclick: download }, "Download"),
+      sealed
+        ? el("button", { type: "button", class: "ed-primary", onclick: publish }, "Publish")
+        : el("button", { type: "button", class: "ed-primary", onclick: saveEdits }, "Download edits"),
+      sealed ? el("button", { type: "button", onclick: download }, "Download") : null,
       el("button", { type: "button", onclick: discard }, "Discard changes")),
-    el("p", { class: "ed-status", role: "status", "data-status": "" }, sealed ? "" : "Publishing is not set up yet: changes download as profile.json."),
+    el("p", { class: "ed-status", role: "status", "data-status": "" }, ""),
     buildForm());
   return panel;
 }
@@ -312,6 +318,14 @@ function download() {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+// Without a sealed token, the edits leave the browser only as a file.
+function saveEdits() {
+  const issues = problems(state.draft);
+  if (issues.length) return status(issues.join(" "), "error");
+  download();
+  status("Downloaded profile.json. Send this file to the site owner. Your draft stays in this browser.", "ok");
 }
 
 function discard() {

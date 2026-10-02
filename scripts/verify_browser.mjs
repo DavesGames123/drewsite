@@ -379,6 +379,15 @@ try {
     check(focusPath === "education.0.school", "editor: a click on page text focuses its field", String(focusPath));
     const draft = await evaluate(`JSON.parse(localStorage.getItem("drewsite-draft")).statement`);
     check(draft === "Edited statement for the check.", "editor: the draft is kept in localStorage");
+    // Without a sealed token, "Download edits" is the one way out of the browser.
+    const sealed = await evaluate(`fetch("/edit/lock.json").then(r => r.json()).then(l => Boolean(l.publish?.sealed))`);
+    if (!sealed) {
+      const actions = await evaluate(`[...document.querySelectorAll(".ed-actions button")].map(b => b.textContent).join("|")`);
+      check(actions === "Download edits|Discard changes", "editor: without a token, the panel offers Download edits and no Publish", actions);
+      await evaluate(`document.querySelector(".ed-primary").click()`);
+      const saved = await evaluate(`document.querySelector("[data-status]").textContent`);
+      check(/^Downloaded profile\.json/.test(saved || ""), "editor: Download edits saves profile.json and says so", saved || "");
+    }
     await shot("desktop-editor");
     await evaluate(`document.querySelector(".ed-close").click()`);
     const restored = await evaluate(`!document.body.classList.contains("is-editing") && document.querySelector(".hero-statement").textContent !== "Edited statement for the check." && document.querySelectorAll("#experience .entry-role").length === ${jobs}`);

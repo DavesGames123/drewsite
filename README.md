@@ -43,14 +43,17 @@ Open `http://localhost:4173/`. To see the still fallback, open `http://localhost
 3. Click a text on the page to open its field in the panel. You can also open a group in the panel.
 4. Type the change. The page shows the change at once.
 5. To add an entry to a list, select "Add". To move or remove an entry, use the arrows or "Remove".
-6. Select "Publish". The live site updates in approximately 1–2 minutes.
-7. Select "Close" to stop editing.
+6. Select "Download edits". The browser saves your changes as `profile.json`.
+7. Send `profile.json` to the site owner.
+8. Select "Close" to stop editing.
 
-Your draft stays in this browser until you publish or discard it. Only you see the draft. Visitors see a change only after "Publish".
+Your draft stays in this browser until you discard it. Only you see the draft. Visitors see a change only after the site owner applies `profile.json`.
 
 A section with no entries does not show on the page. For example, Experience shows after you add the first job.
 
-If publishing is not set up, "Publish" downloads `profile.json`. Send that file to the site owner.
+The panel shows "Publish" in place of "Download edits" only after the site owner seals a GitHub token (see the next section). "Publish" then updates the live site in approximately 1–2 minutes.
+
+To apply a downloaded `profile.json` (site owner): copy the file over `content/profile.json`, run `node scripts/render_content.mjs`, commit, and push to `main`.
 
 ## Set up publishing from the editor (one time, for the site owner)
 
