@@ -34,6 +34,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" />
     <link rel="preload" href="/center.webp" as="image" type="image/webp" fetchpriority="high" />
     <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/editor.css" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to résumé</a>
@@ -149,6 +150,7 @@
         <!-- /render:footer-links -->
         <a href="#top">Back to top</a>
         <button type="button" class="footer-print" id="print-page">Print résumé</button>
+        <button type="button" class="edit-switch" id="edit-switch" role="switch" aria-checked="false">Edit site</button>
       </nav>
     </footer>
 
@@ -197,5 +199,6 @@
     <!-- /render:data -->
 
     <script type="module" src="/js/main.js"></script>
+    <script type="module" src="/js/editor.js"></script>
   </body>
 </html>

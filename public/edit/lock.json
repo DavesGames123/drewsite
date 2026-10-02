@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "kdf": {
+    "name": "PBKDF2",
+    "hash": "SHA-256",
+    "iterations": 600000
+  },
+  "verifier": {
+    "salt": "Tg2pAqBvoHxEiXy57nTtlA==",
+    "hash": "5HZQDhin4PIPWKp5GnELimtqP3qwVAMJC3mOm7kf8Us="
+  },
+  "publish": {
+    "repo": "DavesGames123/drewsite",
+    "branch": "main",
+    "path": "content/profile.json",
+    "sealed": null
+  }
+}
