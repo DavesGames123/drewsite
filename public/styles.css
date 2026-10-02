@@ -16,8 +16,8 @@
   --cream: #f6efe3;
   --cream-2: rgba(246, 239, 227, 0.72);
   --cream-3: rgba(246, 239, 227, 0.52);
-  --gold: #c9a227;
-  --gold-light: #f5cf55;
+  --gold: #c4820e; /* Berkeley Medalist: hairlines and separators */
+  --gold-light: #fdb515; /* Berkeley California Gold: the accent */
   --rule: rgba(246, 239, 227, 0.14);
   --serif: "Instrument Serif", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --sans: "IBM Plex Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
@@ -369,7 +369,7 @@ html::after {
     --ps-edge: var(--arch-field);
     --ps-accent: #003262;
     --ps-accent-ink: #f6efe3;
-    --ps-accent-em: #f5cf55;
+    --ps-accent-em: #fdb515;
     --ps-rule-strong: #0c1a33;
     --ps-ink: #0c1a33;
     --ps-soft: #5d6276;

@@ -17,8 +17,8 @@
 .edit-switch:hover { border-color: var(--gold-light); }
 
 /* Editable text in edit mode */
-body.is-editing [data-edit] { cursor: text; outline: 1px dashed rgba(245, 207, 85, 0.45); outline-offset: 3px; }
-body.is-editing [data-edit]:hover { outline: 1px solid var(--gold-light); background: rgba(245, 207, 85, 0.08); }
+body.is-editing [data-edit] { cursor: text; outline: 1px dashed rgba(253, 181, 21, 0.45); outline-offset: 3px; }
+body.is-editing [data-edit]:hover { outline: 1px solid var(--gold-light); background: rgba(253, 181, 21, 0.08); }
 
 /* Password dialog */
 .ed-dialog {
