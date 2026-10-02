@@ -158,7 +158,9 @@ try {
     const cs = getComputedStyle(document.querySelector(".studio-arch"));
     return { covers: r.left < f.left && r.right > f.right && r.top < f.top, bg: cs.backgroundColor, body: getComputedStyle(document.documentElement).backgroundColor };
   })()`);
-  check(studio.covers && /245, 193, 30/.test(studio.bg) && /6, 20, 43/.test(studio.body), "studio: gold arch behind the silhouette, navy page", JSON.stringify(studio));
+  // The arch takes the gold that the extractor sampled from the video (metadata background_rgb).
+  const sampled = (await evaluate(`fetch("/frames/metadata.json").then(r => r.json())`)).background_rgb.join(", ");
+  check(studio.covers && studio.bg.includes(sampled) && /6, 20, 43/.test(studio.body), "studio: arch in the sampled video gold behind the silhouette, navy page", JSON.stringify({ ...studio, sampled }));
   const anims = await evaluate(`document.getAnimations().map(a => a.animationName || a.constructor.name)`);
   check(anims.length === 0, "motion: no CSS animations run (only the cursor drives the portrait)", JSON.stringify(anims));
   await shot("desktop-hero");
@@ -248,7 +250,7 @@ try {
   await send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
   check(Boolean(await settle("center")), "touch: lifting the finger returns to eye contact");
   const mr = await fieldRect();
-  check(mr.y + mr.h * 0.37 < 844 * 0.5, "mobile: portrait face in the top half of the first screen", `w=${mr.w.toFixed(0)} faceY=${(mr.y + mr.h * 0.37).toFixed(0)}`);
+  check(mr.y + mr.h * 0.36 < 844 * 0.5, "mobile: portrait face in the top half of the first screen", `w=${mr.w.toFixed(0)} faceY=${(mr.y + mr.h * 0.36).toFixed(0)}`);
   await evaluate(`window.scrollTo({ top: document.getElementById("education").offsetTop, behavior: "instant" })`);
   await sleep(120);
   const flight = await evaluate(`(() => { const t = new DOMMatrix(getComputedStyle(document.getElementById("companion")).transform); return { scale: t.a, handed: document.getElementById("portrait").classList.contains("is-handed-off") }; })()`);
@@ -260,7 +262,7 @@ try {
     "mobile scroll: companion portrait appears in the lower-right corner", JSON.stringify(comp));
   check(comp.heroPos === "absolute", "mobile scroll: hero portrait stays in the page (not fixed)", comp.heroPos);
   await shot("mobile-companion");
-  const cf = await evaluate(`(() => { const r = document.getElementById("companion-canvas").getBoundingClientRect(); return { x: r.left + r.width * 0.5, y: r.top + r.height * 0.37 }; })()`);
+  const cf = await evaluate(`(() => { const r = document.getElementById("companion-canvas").getBoundingClientRect(); return { x: r.left + r.width * 0.5, y: r.top + r.height * 0.36 }; })()`);
   const meta2 = await evaluate(`fetch("/frames/metadata.json").then(r => r.json())`);
   const touchAt = { x: 30, y: 200 };
   const wantTouch = expectedIndex(meta2, (Math.atan2(touchAt.y - cf.y, touchAt.x - cf.x) * 180) / Math.PI);
