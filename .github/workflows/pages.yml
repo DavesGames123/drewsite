@@ -1,0 +1,44 @@
+# Build and deploy drewwatkins.com to GitHub Pages.
+# The job renders content/profile.json into the page, runs the static checks,
+# builds dist/ (only the files the page uses), and publishes dist/.
+# The render step comes first, because the site editor commits only
+# content/profile.json. Requires Settings > Pages > Source = "GitHub Actions".
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Render profile.json into index.html
+        run: node scripts/render_content.mjs
+      - name: Static checks (facts, contact, transforms, frames, editor lock)
+        run: python3 scripts/check_site.py
+      - name: Build dist/
+        run: bash scripts/build_dist.sh
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
