@@ -11,7 +11,7 @@
 // The exit code is 1 if the page does not load or the PDF is not 1 or 2 pages.
 
 import { spawn } from "node:child_process";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -36,8 +36,9 @@ async function retry(fn, tries, what) {
 // The server can start in the same CI step, so wait until it answers.
 await retry(async () => (await fetch(URL_)).ok, 60, `no answer from ${URL_}`);
 
+const profile = mkdtempSync(join(tmpdir(), "drew-pdf-"));
 const chrome = spawn(CHROME, [
-  "--headless=new", `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(tmpdir(), "drew-pdf-"))}`,
+  "--headless=new", `--remote-debugging-port=${PORT}`, `--user-data-dir=${profile}`,
   "--no-first-run", "--no-default-browser-check", "about:blank",
 ], { stdio: "ignore" });
 
@@ -86,5 +87,7 @@ try {
   console.error(`build_pdf: ${err.message}`);
   process.exitCode = 1;
 } finally {
-  chrome.kill();
+  // Chrome writes a profile of 20 to 60 MB. Delete it after Chrome exits.
+  await new Promise((r) => { chrome.once("exit", r); chrome.kill(); });
+  rmSync(profile, { recursive: true, force: true });
 }
