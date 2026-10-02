@@ -1,6 +1,7 @@
 # Build and deploy drewwatkins.com to GitHub Pages.
 # The job renders content/profile.json into the page, runs the static checks,
-# builds dist/ (only the files the page uses), and publishes dist/.
+# builds dist/ (only the files the page uses), prints the résumé PDF into
+# dist/, and publishes dist/.
 # The render step comes first, because the site editor commits only
 # content/profile.json. Requires Settings > Pages > Source = "GitHub Actions".
 name: pages
@@ -36,6 +37,12 @@ jobs:
         run: python3 scripts/check_site.py
       - name: Build dist/
         run: bash scripts/build_dist.sh
+      # The footer links to this PDF. It is built from dist/, so an edit to
+      # profile.json reaches the PDF in the same deploy.
+      - name: Build the résumé PDF into dist/
+        run: |
+          python3 -m http.server 4173 -d dist >/dev/null 2>&1 &
+          CHROME="$(command -v google-chrome)" node scripts/build_pdf.mjs --url http://localhost:4173/ --out dist/drew-watkins-resume.pdf
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
