@@ -91,6 +91,9 @@ try {
   process.exitCode = 1;
 } finally {
   // Chrome writes a profile of 20 to 60 MB. Delete it after Chrome exits.
+  // Chrome helper processes can still write to it after the main process exits,
+  // so the delete tries again, and a failure does not fail the build.
   await new Promise((r) => { chrome.once("exit", r); chrome.kill(); });
-  rmSync(profile, { recursive: true, force: true });
+  try { rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }); }
+  catch (err) { console.warn(`build_pdf: profile not deleted (${err.code}): ${profile}`); }
 }
