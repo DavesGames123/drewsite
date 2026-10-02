@@ -6,11 +6,14 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 V="$(git rev-parse --short HEAD 2>/dev/null || date +%s)"
 rm -rf dist
-mkdir -p dist/assets/drew
-cp public/index.html public/styles.css public/editor.css public/favicon.svg public/favicon.ico public/center.webp \
+mkdir -p dist
+cp public/index.html public/styles.css public/editor.css public/favicon.svg public/favicon.ico \
    public/CNAME public/site.webmanifest public/robots.txt public/sitemap.xml dist/
-cp -R public/js public/frames public/icons public/edit dist/
-cp public/assets/drew/drew_still.png dist/assets/drew/
+cp -R public/js public/icons public/edit dist/
+# The portrait files are optional. Without them, the page shows the empty arch.
+[ -f public/center.webp ] && cp public/center.webp dist/
+[ -d public/frames ] && cp -R public/frames dist/
+[ -f public/assets/drew/drew_still.png ] && mkdir -p dist/assets/drew && cp public/assets/drew/drew_still.png dist/assets/drew/
 find dist -name .DS_Store -delete
 sed -i.bak -e "s#href=\"/styles.css\"#href=\"/styles.css?v=$V\"#" -e "s#href=\"/editor.css\"#href=\"/editor.css?v=$V\"#" \
    -e "s#src=\"/js/main.js\"#src=\"/js/main.js?v=$V\"#" -e "s#src=\"/js/editor.js\"#src=\"/js/editor.js?v=$V\"#" dist/index.html

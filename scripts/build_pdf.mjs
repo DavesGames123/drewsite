@@ -46,7 +46,7 @@ try {
   const target = await retry(async () => {
     const list = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json();
     return list.find((t) => t.type === "page")?.webSocketDebuggerUrl;
-  }, 60, "Chrome did not start");
+  }, 200, "Chrome did not start");
   const ws = new WebSocket(target);
   await new Promise((r) => ws.addEventListener("open", r, { once: true }));
   let seq = 0;
@@ -70,9 +70,12 @@ try {
   await send("Runtime.enable");
   await send("Page.navigate", { url: URL_ });
   await retry(() => evaluate(`document.readyState === "complete"`), 100, "page did not load");
-  // The headshot and the web fonts must be in place before the print.
+  // The headshot (if the sheet has one) and the web fonts must be in place before the print.
   await evaluate(`document.fonts.ready.then(() => true)`);
-  const photo = await retry(() => evaluate(`(() => { const i = document.querySelector(".ps-photo img"); return !!i && i.complete && i.naturalWidth > 0; })()`), 60, "headshot did not load");
+  const hasPhoto = await evaluate(`Boolean(document.querySelector(".ps-photo img"))`);
+  const photo = hasPhoto
+    ? await retry(() => evaluate(`(() => { const i = document.querySelector(".ps-photo img"); return i.complete && i.naturalWidth > 0; })()`), 60, "headshot did not load")
+    : "none";
 
   const pdf = await send("Page.printToPDF", {
     printBackground: true, preferCSSPageSize: true, displayHeaderFooter: false, generateDocumentOutline: false,
