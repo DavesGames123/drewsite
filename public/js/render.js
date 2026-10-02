@@ -275,17 +275,21 @@ function renderFooterLinks(d) {
 }
 
 // ---------- print ----------
-// Two-page US Letter résumé. Only @media print shows this block. With no
-// experience, education moves to page 1, so page 1 never prints empty.
+// The printed résumé. Only @media print shows this block. The layout flows:
+// the browser makes as many US Letter pages as the content needs, so a short
+// profile prints on one page and no page prints empty. The accent card
+// (skills, honors, links) floats at the right of the main column.
+// No element depends on a fixed page height or on @page margins, so the
+// sheet prints the same in Chrome, Safari, and Firefox.
 function renderPrint(d) {
   const [first, last] = nameParts(d.name);
   const about = nonEmpty(d.about);
   const li = (items) => nonEmpty(items).map((x) => `<li>${e(x)}</li>`).join("");
-  const job = (j, cls = "ps-job") => {
+  const entry = (j) => {
     const meta = [j.type, j.location].filter(Boolean).join(" · ");
     const skills = nonEmpty(j.skills);
     return (
-      `<li class="${cls}"><p class="ps-dates">${e(j.dates)}</p><div>` +
+      `<li class="ps-entry"><p class="ps-dates">${e(j.dates)}</p><div>` +
       `<h3 class="ps-role">${e(j.role)}</h3><p class="ps-org">${e(j.organization)}</p>` +
       (meta ? `<p class="ps-meta">${e(meta)}</p>` : "") +
       (li(j.points) ? `<ul class="ps-points">${li(j.points)}</ul>` : "") +
@@ -293,61 +297,43 @@ function renderPrint(d) {
       `</div></li>`
     );
   };
-  const edu = (x) =>
-    `<div class="ps-edu"><p class="ps-dates">${e(x.dates)}</p><div>` +
+  const school = (x) =>
+    `<li class="ps-entry"><p class="ps-dates">${e(x.dates)}</p><div>` +
     `<h3 class="ps-role">${e(x.school)}</h3>` +
     (nonEmpty(x.studies).length ? `<p class="ps-org">${e(nonEmpty(x.studies).join(" · "))}</p>` : "") +
     (li(x.details) ? `<ul class="ps-points">${li(x.details)}</ul>` : "") +
-    `</div></div>`;
-  const hasJobs = list(d.experience).length > 0;
-  const eduBlock = list(d.education).length
-    ? `<h2 class="ps-section">${e(sectionText(d, "education", "title"))}</h2>${list(d.education).map(edu).join("")}`
-    : "";
-  const jobsBlock = hasJobs
-    ? `<h2 class="ps-section">${e(sectionText(d, "experience", "title"))}</h2><ol class="ps-list">${list(d.experience).map((j) => job(j)).join("")}</ol>`
-    : "";
-  const volBlock = list(d.volunteering).length
-    ? `<h2 class="ps-section">${e(sectionText(d, "volunteering", "title"))}</h2><ol class="ps-list">${list(d.volunteering).map((v) => job({ ...v, type: "", location: "" }, "ps-job ps-vol")).join("")}</ol>`
-    : "";
+    `</div></li>`;
+  const block = (key, items, fn) =>
+    list(items).length ? `<h2 class="ps-section">${e(sectionText(d, key, "title"))}</h2><ol class="ps-list">${list(items).map(fn).join("")}</ol>` : "";
   const facts = list(d.facts)
     .map((f) => `<div><p class="ps-label">${e(f.label)}</p><p>${e(f.value)}${f.sub ? `<br /><span class="ps-soft">${e(f.sub)}</span>` : ""}</p></div>`)
     .join("");
   const links = list(d.links)
-    .map((l) => `<li><span class="ps-side-k">${e(l.label)}</span>${e(l.url.replace("https://www.", "").replace("https://", "").replace(/\/$/, ""))}</li>`)
+    .map((l) => `<li><span class="ps-side-k">${e(l.label)}</span>${e(l.url.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, ""))}</li>`)
     .join("");
   const side = (title, items, cls = "ps-side-list") => (li(items) ? `<h2 class="ps-side-h">${title}</h2><ul class="${cls}">${li(items)}</ul>` : "");
-  const page2Main = (hasJobs ? eduBlock : "") + volBlock;
+  const domain = d.site?.domain ? ` · ${e(d.site.domain)}` : "";
   return `<section class="print-sheet" aria-hidden="true">
-  <article class="ps-page">
-    <header class="ps-head">
-      <div class="ps-head-text">
-        <p class="ps-kicker">${e(d.title)}</p>
-        <h2 class="ps-name">${e(first)} <em>${e(last)}</em></h2>
-        <p class="ps-about">${about.map((x) => `<span>${e(x)}</span>`).join("")}</p>
-      </div>
-      <div class="ps-photo"><img src="/center.webp" alt="" /></div>
-    </header>
-    ${facts ? `<div class="ps-facts">${facts}</div>` : ""}
-    ${hasJobs ? jobsBlock : eduBlock}
-    <footer class="ps-foot"><span>${e(d.name)} — ${e(d.title)}</span><span>1 / 2</span></footer>
-  </article>
-  <article class="ps-page ps-page-2">
-    <div class="ps-main">
-      ${page2Main.replace('class="ps-section"', 'class="ps-section ps-section-first"')}
-      <div class="ps-closing">
-        <p class="ps-label">Focus</p>
-        <p class="ps-closing-text">${about.map(e).join("<br />")}</p>
-      </div>
+  <header class="ps-head">
+    <div class="ps-head-text">
+      <p class="ps-kicker">${e(d.title)}</p>
+      <h2 class="ps-name">${e(first)} <em>${e(last)}</em></h2>
+      <p class="ps-about">${about.map((x) => `<span>${e(x)}</span>`).join("")}</p>
     </div>
+    <div class="ps-photo"><img src="/center.webp" alt="" /></div>
+  </header>
+  ${facts ? `<div class="ps-facts">${facts}</div>` : ""}
+  <div class="ps-body">
     <aside class="ps-side">
-      <p class="ps-side-name">${e(first)}<br /><em>${e(last)}</em></p>
       ${side("Skills", d.skills)}
       ${side("Honors", d.honors, "ps-side-list ps-side-italic")}
       ${links ? `<h2 class="ps-side-h">Online</h2><ul class="ps-side-links">${links}</ul>` : ""}
-      <div class="ps-side-photo"><img src="/center.webp" alt="" /></div>
     </aside>
-    <footer class="ps-foot"><span>${e(d.name)} — ${e(d.title)}</span><span>2 / 2</span></footer>
-  </article>
+    ${block("experience", d.experience, entry)}
+    ${block("education", d.education, school)}
+    ${block("volunteering", d.volunteering, (v) => entry({ ...v, type: "", location: "" }))}
+  </div>
+  <footer class="ps-foot">${e(d.name)} — ${e(d.title)}${domain}</footer>
 </section>`;
 }
 
