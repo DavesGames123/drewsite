@@ -1,0 +1,12 @@
+# Build output
+dist/
+
+# Source video: about 4 MB, and the page does not load it. Keep a local copy at
+# public/character.mp4 to run scripts/extract_video_frames.py again.
+public/character.mp4
+
+# Tooling
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/
