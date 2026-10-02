@@ -117,7 +117,7 @@ function rerender() {
     range.setStartAfter(start);
     end.before(range.createContextualFragment(REGIONS[name](state.draft)));
   }
-  document.title = `${state.draft.name} — ${state.draft.title}`;
+  document.title = state.draft.name;
 }
 
 function changed() {

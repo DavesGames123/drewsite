@@ -1,7 +1,8 @@
-"""Make the site icons: a gold serif "D" on navy.
+"""Make the site icons: a gold serif "D" on Berkeley blue.
 
-The D is Georgia Bold Italic (macOS), in the studio gold, on the page's night
-color, in a rounded square. Didot was tried first; its hairlines vanish at
+The D is Georgia Bold Italic (macOS), in California gold (#fdb515), on
+Berkeley blue (#003262), in a rounded square. Link previews (iMessage) show
+the apple-touch-icon; the page navy read as black at that size. Didot was tried first; its hairlines vanish at
 16 px, and Georgia's heavy strokes hold. Writes:
 
     public/favicon.ico                  16, 32, 48 px
@@ -21,8 +22,8 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "public"
-GOLD = (245, 193, 30)
-NIGHT = (6, 20, 43)
+GOLD = (253, 181, 21)
+NIGHT = (0, 50, 98)
 LETTER = "D"
 FONT = "/System/Library/Fonts/Supplemental/Georgia Bold Italic.ttf"
 FONT_INDEX = 0

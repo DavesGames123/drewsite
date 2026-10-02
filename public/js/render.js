@@ -80,7 +80,12 @@ function navLinks(d) {
 function renderHead(d) {
   const site = d.site || {};
   const url = `https://${site.domain}/`;
-  const title = `${d.name} — ${d.title}`;
+  // Link previews (iMessage, Slack, and so on) show og:title as the headline and
+  // og:description under it. The name alone is the headline; the about line
+  // ("Statistics @ Berkeley | Class of ’28 | ...") is the second line.
+  const title = d.name;
+  const blurb = nonEmpty(d.about).join(" | ") || d.title;
+  const version = (site.image_version ?? 2);
   const [first, last] = nameParts(d.name);
   const person = {
     "@context": "https://schema.org",
@@ -99,9 +104,10 @@ function renderHead(d) {
     `<meta property="og:type" content="profile" />`,
     `<meta property="og:site_name" content="${e(d.name)}" />`,
     `<meta property="og:title" content="${e(title)}" />`,
-    `<meta property="og:description" content="${e(site.description)}" />`,
+    `<meta property="og:description" content="${e(blurb)}" />`,
     `<meta property="og:url" content="${e(url)}" />`,
-    `<meta property="og:image" content="${e(url)}icons/og-image.jpg?v=1" />`,
+    `<meta property="og:image" content="${e(url)}icons/og-image.jpg?v=${version}" />`,
+    `<meta property="og:image:type" content="image/jpeg" />`,
     `<meta property="og:image:width" content="1200" />`,
     `<meta property="og:image:height" content="630" />`,
     `<meta property="og:image:alt" content="Stylized portrait of ${e(d.name)} in a gold studio arch beside the name and title, ${e(d.title)}." />`,
@@ -109,8 +115,8 @@ function renderHead(d) {
     `<meta property="profile:last_name" content="${e(last)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${e(title)}" />`,
-    `<meta name="twitter:description" content="${e(site.description)}" />`,
-    `<meta name="twitter:image" content="${e(url)}icons/og-image.jpg?v=1" />`,
+    `<meta name="twitter:description" content="${e(blurb)}" />`,
+    `<meta name="twitter:image" content="${e(url)}icons/og-image.jpg?v=${version}" />`,
     `<script type="application/ld+json">${JSON.stringify(person).replace(/</g, "\\u003c")}</script>`,
   ].join("\n");
 }
