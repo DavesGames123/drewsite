@@ -265,7 +265,7 @@ function renderMain(d) {
 
 // ---------- footer ----------
 function renderFooterName(d) {
-  return `<p class="footer-name"><span class="footer-name-text"${ed("name")}>${e(d.name)}</span><span${ed("title")}>${e(d.title)}</span></p>`;
+  return `<p class="footer-name"${ed("name")}>${e(d.name)}<span${ed("title")}>${e(d.title)}</span></p>`;
 }
 
 function renderFooterLinks(d) {
