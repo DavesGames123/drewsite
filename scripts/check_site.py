@@ -9,6 +9,11 @@ Checks:
   - no JS module blends frames (globalAlpha other than 1)
   - the editor lock has a password hash, and no plain token is in public/
 
+Scope: the transform and globalAlpha checks read only public/styles.css and
+public/js/*.js. Quarto output in public/stories/ (planned Closeread stories)
+is outside that scope, so its Bootstrap and scroll CSS do not fail the checks.
+The token check reads all of public/, which includes public/stories/.
+
 Usage:
     python3 scripts/check_site.py
 """
