@@ -21,6 +21,8 @@ public/js/{manifest,renderer,controller,stage,companion}.js   portrait runtime
 (not installed) public/frames/       frame ring: frame_NNN.webp, metadata.json
 (not installed) public/center.webp   ring frame with direct eye contact
 (not installed) public/assets/drew/drew_still.png   one still photo
+(planned) stories/            Quarto project for Closeread stories (.qmd)
+(planned) public/stories/     rendered stories; served at /stories/<slug>/
 scripts/render_content.mjs    profile.json -> index.html (--check: stale test)
 scripts/edit_lock.mjs         set the editor password; seal the GitHub token
 scripts/extract_video_frames.py   video -> cutout frames, center.webp, metadata
@@ -141,6 +143,26 @@ The page is static HTML, so the résumé reads and prints without JavaScript.
 The extractor needs macOS for the Vision matte. Without the matte, it writes opaque frames.
 
 `KEYFRAMES`, `CENTER_SOURCE_FRAME`, and `CROP` in the extractor still hold the values for the removed video. Set them for the new video before you run the extractor.
+
+## Closeread stories (planned)
+
+Drew can add scrollytelling pages that she writes in Quarto with the Closeread extension. No story exists yet, and the build does not render Quarto. The site keeps these paths and steps ready for that work.
+
+Each story is a separate HTML page at `/stories/<slug>/`. The résumé page links to the story. The story does not go into `index.html`, because Quarto brings its own Bootstrap CSS and JS, and these files would change the résumé layout and the print sheet. An overlay that shows the story in an iframe is optional. On a phone, the story scrolls better at its own URL.
+
+To add the first story:
+
+1. Make a Quarto project in `stories/`, and set its output directory to `../public/stories`.
+2. Install the extension: `quarto add qmd-lab/closeread`.
+3. Write each story as `stories/<slug>/index.qmd`, with the format `closeread-html`.
+4. In `scripts/build_dist.sh`, add the copy line that the header gives.
+5. In `.github/workflows/pages.yml`, add `quarto-dev/quarto-actions/setup` and a `quarto render stories` step before "Build dist/".
+6. Add each story URL to `public/sitemap.xml`.
+7. To link a story from the page, add a list to `profile.json` and a region to `render.js`.
+
+A story that runs R or Python code needs that runtime in the workflow. As an alternative, set `freeze: auto` in the Quarto project, and commit the `_freeze/` directory. The site editor changes only `profile.json`, so Drew edits a story in the repository.
+
+`check_site.py` does not scan story CSS for transforms. Its scope is `styles.css` and `public/js/` only.
 
 ## Print
 
