@@ -2,6 +2,14 @@
 # Copy only the files the live site uses from public/ into dist/, for GitHub Pages.
 # Every deploy stamps its CSS, JS and module imports with the commit (?v=SHA), so a
 # browser never mixes a cached old script with a new page.
+#
+# The script deletes dist/ and then copies a fixed list. A file that is not on
+# the list does not deploy. Optional paths copy only when they exist:
+#   public/center.webp, public/frames/, public/assets/drew/   portrait files
+#   public/stories/   Closeread stories from Quarto (planned; no copy line yet)
+# For stories, add: [ -d public/stories ] && cp -R public/stories dist/
+# The ?v=SHA stamp changes only dist/index.html and dist/js/*.js. Quarto
+# output under dist/stories/ keeps its own relative asset paths.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 V="$(git rev-parse --short HEAD 2>/dev/null || date +%s)"

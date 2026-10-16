@@ -4,6 +4,12 @@
 # dist/, and publishes dist/.
 # The render step comes first, because the site editor commits only
 # content/profile.json. Requires Settings > Pages > Source = "GitHub Actions".
+#
+# Closeread stories (planned; no step exists yet): a Quarto render step goes
+# after the static checks and before "Build dist/". The step writes to
+# public/stories/, and build_dist.sh must copy that directory. Do not render
+# into dist/, because build_dist.sh deletes dist/ first. The PDF step prints
+# only "/", so a story does not change the résumé PDF.
 name: pages
 
 on:
